@@ -6,9 +6,7 @@ ini_set('display_errors', 0); // No mostrar errores en salida
 require_once 'conexion.php';
 require_once 'enviar_correo.php';
 
-// =====================================================
 // FUNCIONES AUXILIARES PARA OBTENER IDs DE CATÁLOGOS
-// =====================================================
 
 function obtenerIdCargo($valor_cargo) {
     $conexion = conectarDB();
@@ -176,9 +174,7 @@ function guardarColaborador($nombres, $apellidos, $cargo, $departamento, $fecha_
     }
 }
 
-// =====================================================
 // FUNCIÓN PARA TABLA MATRIZ SIMPLIFICADA
-// =====================================================
 
 // Procesar datos del formulario si se envía por POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -305,9 +301,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-// =====================================================
+
 // PARA TABLA SIMPLIFICADA
-// =====================================================
 function procesarEvaluacionNuevaTabla($data) {
     $conexion = conectarDB();
     

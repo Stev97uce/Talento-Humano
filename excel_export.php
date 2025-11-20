@@ -1,8 +1,4 @@
 <?php
-/**
- * Exportador Simple de Evaluaciones - Para integrar en consultas
- * Genera descarga directa de Excel
- */
 
 require_once 'conexion.php';
 

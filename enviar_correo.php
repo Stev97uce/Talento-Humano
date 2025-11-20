@@ -1,8 +1,4 @@
 <?php
-/**
- * Configuración y funciones para envío de correos - VERSIÓN ACTUALIZADA
- * Servidor SMTP: mx1.kmsolutionsec.com:587 
- */
 
 // Configuración del servidor de correo SMTP
 class ConfigCorreo {
@@ -20,9 +16,6 @@ class ConfigCorreo {
     const SISTEMA_NOMBRE = 'Sistema de Evaluaciones - KM Solutions EC';
 }
 
-/**
- * Clase SMTP directa para envío confiable usando puerto 587
- */
 class SMTPDirecto {
     private $socket;
     

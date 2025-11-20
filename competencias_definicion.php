@@ -1,8 +1,4 @@
 <?php
-/**
- * Definición de competencias específicas por cargo
- * Si un cargo no tiene competencias definidas, se usan las genéricas por defecto
- */
 
 function obtenerCompetenciasPorCargo($nombre_cargo) {
     
@@ -154,6 +150,33 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
                 'descripcion' => 'Demostrar sensibilidad por las necesidades de clientes internos o externos. Conceder la más alta calidad a la satisfacción del cliente, escucharlo y generar soluciones para sus requerimientos. Mantener una actitud permanente de mejora continua.'
             ]
         ],
+        
+        'Asistente administrativo' => [
+            [
+                'nombre' => 'Comunicación efectiva',
+                'descripcion' => 'Es la capacidad de escuchar, hacer preguntas, expresar conceptos e ideas en forma efectiva, exponer aspectos positivos. La habilidad de saber cuándo y a quién preguntar para llevar adelante un propósito. Es la capacidad de escuchar al otro y comprenderlo. Comprender la dinámica de grupos y el diseño efectivo de reuniones. Incluye la capacidad de comunicar por escrito con concisión y claridad.'
+            ],
+            [
+                'nombre' => 'Manejo de conflictos',
+                'descripcion' => 'Es la capacidad de idear la solución a un conflicto, atendiendo sus necesidades, problemas y objetivos del negocio con la factibilidad interna de resolución. Incluye la capacidad de idear soluciones para resolver diferencias de ideas u opiniones entre 2 o más partes, evitando la manipulación y la parcialidad de los intereses personales.'
+            ],
+            [
+                'nombre' => 'Servicio al cliente',
+                'descripcion' => 'Implica un deseo de ayudar o servir a los clientes, de comprender y satisfacer sus necesidades, aun aquellas no expresadas. Implica esforzarse por conocer y resolver los problemas del cliente. No se trata tanto de una conducta concreta frente a un cliente real como de una actitud permanente de contar con las necesidades del cliente para incorporar este conocimiento a la forma específica de planificar la actividad.'
+            ],
+            [
+                'nombre' => 'Orden y Organización',
+                'descripcion' => 'Es la preocupación continua por comprobar y controlar el trabajo y la información. Implica también una insistencia en que las responsabilidades y funciones asignadas estén claramente asignadas.'
+            ],
+            [
+                'nombre' => 'Dinamismo – energía',
+                'descripcion' => 'Se trata de la habilidad para trabajar duro en situaciones cambiantes o alternativas, en jornadas prolongadas y con interlocutores diversos, sin que se vea afectado su nivel de actividad.'
+            ],
+            [
+                'nombre' => 'Orientación al cliente interno y externo',
+                'descripcion' => 'Demostrar sensibilidad por las necesidades de clientes internos o externos. Conceder la más alta calidad a la satisfacción del cliente, escucharlo y generar soluciones para sus requerimientos. Mantener una actitud permanente de mejora continua.'
+            ]
+        ],
 
         'Auxiliar de bodega' => [
             [
@@ -174,7 +197,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Jefe cartera y cobranzas' => [
+        'Jefe de cartera y cobranzas' => [
             [
                 'nombre' => 'Pensamiento estratégico',
                 'descripcion' => 'Habilidad para comprender rápidamente los cambios del entorno, detectar oportunidades, reconocer amenazas competitivas y evaluar fortalezas y debilidades organizacionales para identificar la mejor respuesta estratégica. Incluye detectar oportunidades de negocio y generar alianzas estratégicas.'
@@ -416,7 +439,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Pasante del área Comercial' => [
+        'Pasante Comercial' => [
             [
                 'nombre' => 'Comunicación efectiva',
                 'descripcion' => 'Es la capacidad de escuchar, hacer preguntas, expresar conceptos e ideas en forma efectiva, exponer aspectos positivos. La habilidad de saber cuándo y a quién preguntar para llevar adelante un propósito. Es la capacidad de escuchar al otro y comprenderlo. Comprender la dinámica de grupos y el diseño efectivo de reuniones. Incluye la capacidad de comunicar por escrito con concisión y claridad.'
@@ -485,7 +508,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Asistente Comercial Administrativo Guayaquil' => [
+        'Asistente Comercial Administrativo GYE' => [
             [
                 "competencia" => "Comunicación efectiva",
                 "descripcion" => "Es la capacidad de escuchar, hacer preguntas, expresar conceptos e ideas en forma efectiva, exponer aspectos positivos. La habilidad de saber cuándo y a quién preguntar para llevar adelante un propósito. Es la capacidad de escuchar al otro y comprenderlo. Comprender la dinámica de grupos y el diseño efectivo de reuniones. Incluye la capacidad de comunicar por escrito con concisión y claridad"
@@ -597,7 +620,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Asistente Administrativo Outsorcing' => [
+        'Asistente Administrativo Outsourcing' => [
             [
                 'nombre' => 'Pensamiento estratégico',
                 'descripcion' => 'Es la habilidad para comprender rápidamente los cambios del entorno, las oportunidades del mercado, las amenazas competitivas y las fortalezas y debilidades de su propia organización a la hora de identificar la mejor respuesta estratégica. Capacidad para detectar nuevas oportunidades de negocio y realizar alianzas estratégicas.'
@@ -655,7 +678,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Ejecutivo/a Proyectos' => [
+        'Ejecutivo Proyectos' => [
             [
                 'nombre' => 'Pensamiento estratégico',
                 'descripcion' => 'Es la habilidad para comprender rápidamente los cambios del entorno, las oportunidades del mercado, las amenazas competitivas y las fortalezas y debilidades de su propia organización a la hora de identificar la mejor respuesta estratégica. Capacidad para detectar nuevas oportunidades de negocio y realizar alianzas estratégicas.'
@@ -725,7 +748,7 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
-        'Operador Informático Adelca Aloag' => [
+        'Operador Informático Adelca' => [
             [
                 'nombre' => 'Pensamiento estratégico',
                 'descripcion' => 'Es la habilidad para comprender rápidamente los cambios del entorno, las oportunidades del mercado, las amenazas competitivas y las fortalezas y debilidades de su propia organización a la hora de identificar la mejor respuesta estratégica. Capacidad para detectar nuevas oportunidades de negocio y realizar alianzas estratégicas.'
@@ -787,6 +810,36 @@ function obtenerCompetenciasPorCargo($nombre_cargo) {
             ]
         ],
 
+        'Técnico Costa' => [
+            [
+                'nombre' => 'Pensamiento estratégico',
+                'descripcion' => 'Es la habilidad para comprender rápidamente los cambios del entorno, las oportunidades del mercado, las amenazas competitivas y las fortalezas y debilidades de su propia organización a la hora de identificar la mejor respuesta estratégica. Capacidad para detectar nuevas oportunidades de negocio y realizar alianzas estratégicas.'
+            ],
+            [
+                'nombre' => 'Comunicación efectiva',
+                'descripcion' => 'Es la capacidad de escuchar, hacer preguntas, expresar conceptos e ideas en forma efectiva, exponer aspectos positivos. La habilidad de saber cuándo y a quién preguntar para llevar adelante un propósito. Es la capacidad de escuchar al otro y comprenderlo. Comprender la dinámica de grupos y el diseño efectivo de reuniones. Incluye la capacidad de comunicar por escrito con concisión y claridad.'
+            ],
+            [
+                'nombre' => 'Manejo de conflictos',
+                'descripcion' => 'Es la capacidad de idear la solución a un conflicto, atendiendo sus necesidades, problemas y objetivos del negocio con la factibilidad interna de resolución. Incluye la capacidad de idear soluciones para resolver diferencias de ideas u opiniones entre dos o más partes, evitando la manipulación y la parcialidad de los intereses personales.'
+            ],
+            [
+                'nombre' => 'Orientación al cliente interno y externo',
+                'descripcion' => 'Demostrar sensibilidad por las necesidades o exigencias que un conjunto de clientes potenciales externos o internos pueden requerir en el presente o en el futuro. Implica una actitud permanente de considerar las necesidades del cliente para incorporar este conocimiento a la forma de planear la actividad. Conceder alta calidad a la satisfacción del cliente, escuchar, generar soluciones y mantener un compromiso con la mejora continua.'
+            ],
+            [
+                'nombre' => 'Orden y Organización',
+                'descripcion' => 'Es la preocupación continua por comprobar y controlar el trabajo y la información. Implica también una insistencia en que las responsabilidades y funciones asignadas estén claramente definidas.'
+            ],
+            [
+                'nombre' => 'Aprendizaje Continuo',
+                'descripcion' => 'Es la habilidad para buscar y compartir información útil para la resolución de situaciones de negocios, utilizando todo el potencial de la empresa. Incluye la capacidad de capitalizar la experiencia de otros y la propia, propagando el conocimiento adquirido en foros locales o internacionales.'
+            ],
+            [
+                'nombre' => 'Dinamismo - energía',
+                'descripcion' => 'Se trata de la habilidad para trabajar duro en situaciones cambiantes o alternativas, con interlocutores diversos que cambian en cortos espacios de tiempo, en jornadas prolongadas sin que esto afecte su nivel de actividad.'
+            ]
+        ],
         'Técnico Cuenca' => [
             [
                 'nombre' => 'Pensamiento estratégico',

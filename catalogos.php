@@ -1,7 +1,10 @@
 <?php
+error_reporting(0); // Suprimir errores PHP que generen HTML
+ini_set('display_errors', 0);
+
 require_once 'conexion.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Manejar tanto form data como JSON
@@ -26,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
                 
-                $sql = "SELECT id_dep as id_departamento, nom_dep, descri_dep FROM departamentos WHERE activo = 1 ORDER BY nom_dep ASC";
+                $sql = "SELECT id_dep as id_departamento, nom_dep, descri_dep FROM departamentos ORDER BY nom_dep ASC";
                 $stmt = $conexion->prepare($sql);
                 $stmt->execute();
                 $departamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -49,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
                 
-                $sql = "SELECT id_cargo, nom_car, descri_car FROM cargos WHERE activo = 1 ORDER BY nom_car ASC";
+                $sql = "SELECT id_cargo, nom_car, descri_car FROM cargos ORDER BY nom_car ASC";
                 $stmt = $conexion->prepare($sql);
                 $stmt->execute();
                 $cargos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -354,7 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
                 
-                $sql = "SELECT id_dep, nom_dep, descri_dep FROM departamentos WHERE activo = 1 ORDER BY nom_dep ASC";
+                $sql = "SELECT id_dep, nom_dep, descri_dep FROM departamentos ORDER BY nom_dep ASC";
                 $stmt = $conexion->prepare($sql);
                 $stmt->execute();
                 $departamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -377,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
                 
-                $sql = "SELECT id_cargo, nom_car, descri_car FROM cargos WHERE activo = 1 ORDER BY nom_car ASC";
+                $sql = "SELECT id_cargo, nom_car, descri_car FROM cargos ORDER BY nom_car ASC";
                 $stmt = $conexion->prepare($sql);
                 $stmt->execute();
                 $cargos = $stmt->fetchAll(PDO::FETCH_ASSOC);

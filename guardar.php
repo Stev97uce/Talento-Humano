@@ -6,6 +6,240 @@ ini_set('display_errors', 0);
 require_once 'conexion.php';
 require_once 'enviar_correo.php';
 
+// =====================================================
+// MANEJAR PETICIONES JSON PARA EVALUACION.PHP
+// =====================================================
+$input_json = file_get_contents('php://input');
+$json_data = json_decode($input_json, true);
+
+// Si es una petición JSON con action
+if ($json_data && isset($json_data['action'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    
+    switch ($json_data['action']) {
+        case 'completar_evaluacion':
+            try {
+                $id_registro = intval($json_data['id_registro'] ?? 0);
+                $puntajes = $json_data['puntajes'] ?? [];
+                
+                if ($id_registro <= 0) {
+                    echo json_encode(['success' => false, 'mensaje' => 'ID de registro inválido']);
+                    exit;
+                }
+                
+                $conexion = conectarDB();
+                if (!$conexion) {
+                    echo json_encode(['success' => false, 'mensaje' => 'Error de conexión']);
+                    exit;
+                }
+                
+                $conexion->beginTransaction();
+                
+                // Calcular totales por área
+                $total_conducta = 0;
+                $total_productividad = 0;
+                $total_competencias = 0;
+                $total_otros = 0;
+                
+                // Conducta Laboral (c1-c5)
+                for ($i = 1; $i <= 5; $i++) {
+                    $total_conducta += intval($puntajes['c' . $i] ?? 0);
+                }
+                
+                // Productividad (p1-p6)
+                for ($i = 1; $i <= 6; $i++) {
+                    $total_productividad += intval($puntajes['p' . $i] ?? 0);
+                }
+                
+                // Competencias Específicas (ce1-ce10)
+                for ($i = 1; $i <= 10; $i++) {
+                    $total_competencias += intval($puntajes['ce' . $i] ?? 0);
+                }
+                
+                // Otros Factores (o1-o2)
+                for ($i = 1; $i <= 2; $i++) {
+                    $total_otros += intval($puntajes['o' . $i] ?? 0);
+                }
+                
+                // Calcular porcentajes
+                $porc_conducta = ($total_conducta / 50) * 100;
+                $porc_productividad = ($total_productividad / 60) * 100;
+                $porc_competencias = ($total_competencias / 70) * 100;
+                $porc_otros = ($total_otros / 20) * 100;
+                
+                // Verificar si ya existe registro en matriz
+                $sqlCheck = "SELECT id_matriz FROM matriz WHERE id_info_reg = ?";
+                $stmtCheck = $conexion->prepare($sqlCheck);
+                $stmtCheck->execute([$id_registro]);
+                $existe = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                
+                if ($existe) {
+                    // Actualizar registro existente
+                    $sqlUpdate = "UPDATE matriz SET 
+                        porc_cond_lab = ?,
+                        porc_prod = ?,
+                        porc_comp = ?,
+                        porc_otros = ?
+                        WHERE id_info_reg = ?";
+                    $stmtUpdate = $conexion->prepare($sqlUpdate);
+                    $stmtUpdate->execute([
+                        round($porc_conducta, 2),
+                        round($porc_productividad, 2),
+                        round($porc_competencias, 2),
+                        round($porc_otros, 2),
+                        $id_registro
+                    ]);
+                } else {
+                    // Insertar registro nuevo
+                    $sqlInsert = "INSERT INTO matriz (id_info_reg, porc_cond_lab, porc_prod, porc_comp, porc_otros) 
+                        VALUES (?, ?, ?, ?, ?)";
+                    $stmtInsert = $conexion->prepare($sqlInsert);
+                    $stmtInsert->execute([
+                        $id_registro,
+                        round($porc_conducta, 2),
+                        round($porc_productividad, 2),
+                        round($porc_competencias, 2),
+                        round($porc_otros, 2)
+                    ]);
+                }
+                
+                // Actualizar timestamp en info_registro
+                $sqlUpdateInfo = "UPDATE info_registro SET fe_actu = NOW() WHERE id_info_reg = ?";
+                $stmtUpdateInfo = $conexion->prepare($sqlUpdateInfo);
+                $stmtUpdateInfo->execute([$id_registro]);
+                
+                $puntaje_total = $total_conducta + $total_productividad + $total_competencias + $total_otros;
+                $porcentaje_total = ($puntaje_total / 200) * 100;
+                
+                $conexion->commit();
+                
+                echo json_encode([
+                    'success' => true,
+                    'mensaje' => 'Evaluación completada exitosamente',
+                    'puntaje_total' => $puntaje_total,
+                    'porcentaje_total' => round($porcentaje_total, 2)
+                ]);
+                
+            } catch (Exception $e) {
+                if (isset($conexion) && $conexion->inTransaction()) {
+                    $conexion->rollBack();
+                }
+                echo json_encode(['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        default:
+            echo json_encode(['success' => false, 'mensaje' => 'Acción no reconocida']);
+            exit;
+    }
+}
+
+// Si es una petición POST form-data con action
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    
+    switch ($_POST['action']) {
+        case 'obtener_evaluaciones_pendientes':
+            try {
+                $conexion = conectarDB();
+                if (!$conexion) {
+                    echo json_encode(['success' => false, 'mensaje' => 'Error de conexión']);
+                    exit;
+                }
+                
+                $sql = "SELECT 
+                    ir.id_info_reg as id_registro,
+                    DATE_FORMAT(ir.fe_crea, '%Y-%m-%d') as fecha,
+                    CONCAT(c.nom_col, ' ', c.apell_col) as nombre_completo,
+                    car.nom_car as cargo
+                    FROM info_registro ir
+                    INNER JOIN colaborador c ON ir.id_info_reg = c.id_info_reg
+                    INNER JOIN cargos car ON c.id_cargo = car.id_cargo
+                    LEFT JOIN matriz m ON ir.id_info_reg = m.id_info_reg
+                    WHERE (m.porc_cond_lab IS NULL OR m.porc_cond_lab = 0)
+                    AND ir.activo = 1
+                    ORDER BY ir.fe_crea DESC";
+                
+                $stmt = $conexion->prepare($sql);
+                $stmt->execute();
+                $evaluaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                echo json_encode([
+                    'success' => true,
+                    'evaluaciones' => $evaluaciones
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'obtener_detalle_evaluacion':
+            try {
+                $conexion = conectarDB();
+                if (!$conexion) {
+                    echo json_encode(['success' => false, 'mensaje' => 'Error de conexión']);
+                    exit;
+                }
+                
+                $id_registro = intval($_POST['id_registro'] ?? 0);
+                
+                if ($id_registro <= 0) {
+                    echo json_encode(['success' => false, 'mensaje' => 'ID inválido']);
+                    exit;
+                }
+                
+                // Obtener datos del colaborador
+                $sqlCol = "SELECT 
+                    c.nom_col, c.apell_col, c.email_col as email,
+                    DATE_FORMAT(c.fech_ing_col, '%d/%m/%Y') as fecha_ingreso_format,
+                    car.nom_car as cargo,
+                    dep.nom_dep as departamento
+                    FROM colaborador c
+                    INNER JOIN cargos car ON c.id_cargo = car.id_cargo
+                    INNER JOIN departamentos dep ON c.id_departamento = dep.id_dep
+                    WHERE c.id_info_reg = ?";
+                
+                $stmtCol = $conexion->prepare($sqlCol);
+                $stmtCol->execute([$id_registro]);
+                $colaborador = $stmtCol->fetch(PDO::FETCH_ASSOC);
+                
+                // Obtener datos del evaluador
+                $sqlEval = "SELECT 
+                    e.nom_eva, e.apell_eva, e.email_eva as email,
+                    car.nom_car as cargo,
+                    dep.nom_dep as departamento
+                    FROM evaluador e
+                    INNER JOIN cargos car ON e.id_cargo = car.id_cargo
+                    INNER JOIN departamentos dep ON e.id_departamento = dep.id_dep
+                    WHERE e.id_info_reg = ?";
+                
+                $stmtEval = $conexion->prepare($sqlEval);
+                $stmtEval->execute([$id_registro]);
+                $evaluador = $stmtEval->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$colaborador || !$evaluador) {
+                    echo json_encode(['success' => false, 'mensaje' => 'No se encontraron datos completos']);
+                    exit;
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'colaborador' => $colaborador,
+                    'evaluador' => $evaluador
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        default:
+            // Continuar con el procesamiento normal de POST
+            break;
+    }
+}
+
 // FUNCIONES AUXILIARES PARA OBTENER IDs DE CATÁLOGOS
 
 function obtenerIdCargo($valor_cargo) {
@@ -176,8 +410,8 @@ function guardarColaborador($nombres, $apellidos, $cargo, $departamento, $fecha_
 
 // FUNCIÓN PARA TABLA MATRIZ SIMPLIFICADA
 
-// Procesar datos del formulario si se envía por POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Procesar datos del formulario si se envía por POST (solo para index.php)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action']) && !$json_data) {
     
     // Validar campos requeridos - Colaborador
     $nombres = trim($_POST['nombres'] ?? '');

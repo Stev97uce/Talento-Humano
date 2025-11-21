@@ -1,7 +1,7 @@
 <?php
 // Configurar manejo de errores para producción
-error_reporting(E_ERROR | E_PARSE); // Solo errores críticos
-ini_set('display_errors', 0); // No mostrar errores en salida
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', 0);
 
 require_once 'conexion.php';
 require_once 'enviar_correo.php';
